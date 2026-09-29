@@ -3,7 +3,7 @@ __pycache__/
 
 # Clipboard history: private, machine-specific, never commit.
 history.json
-clipman-data/
+clipcopy-data/
 
 # wl-clipboard helpers are fetched by install.sh, not vendored.
 bin/wl-copy

@@ -1,5 +1,5 @@
 #!/bin/bash
-# Show/raise the Clipman window. Wired to the global keybinding and used to
+# Show/raise the ClipCopy window. Wired to the global keybinding and used to
 # launch the app if it is not already running.
 set -u
 export DBUS_SESSION_BUS_ADDRESS="unix:path=${XDG_RUNTIME_DIR:-/run/user/$(id -u)}/bus"
@@ -7,19 +7,19 @@ BUS="$DBUS_SESSION_BUS_ADDRESS"
 APP_DIR="$(cd "$(dirname "$0")/.." && pwd)"
 
 # If the daemon is running, just raise its window.
-if gdbus call --session --dest io.github.clipman \
-      --object-path /io/github/clipman \
+if gdbus call --session --dest io.github.clipcopy \
+      --object-path /io/github/clipcopy \
       --method org.gtk.Application.Activate "{}" >/dev/null 2>&1; then
     exit 0
 fi
 
 # Otherwise start it in the background, then raise the window.
-nohup python3 "$APP_DIR/clipman.py" >/dev/null 2>&1 &
+nohup python3 "$APP_DIR/clipcopy.py" >/dev/null 2>&1 &
 
 for _ in $(seq 1 40); do
     sleep 0.25
-    if gdbus call --session --dest io.github.clipman \
-          --object-path /io/github/clipman \
+    if gdbus call --session --dest io.github.clipcopy \
+          --object-path /io/github/clipcopy \
           --method org.gtk.Application.Activate "{}" >/dev/null 2>&1; then
         exit 0
     fi

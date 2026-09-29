@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Clipman - clipboard history for GNOME/Wayland.
+"""ClipCopy - clipboard history for GNOME/Wayland.
 
 Runs as a tray-less background app:
   * watches the clipboard and records history to disk
@@ -33,10 +33,10 @@ from gi.repository import Gdk, Gio, GLib, Gtk, Pango  # noqa: E402
 
 from history import History  # noqa: E402
 
-APP_ID = "io.github.clipman"
+APP_ID = "io.github.clipcopy"
 BIN = os.path.join(BASE, "bin")
 WL_COPY = os.path.join(BIN, "wl-copy")
-DATA_DIR = os.path.join(GLib.get_user_data_dir(), "clipman-data")
+DATA_DIR = os.path.join(GLib.get_user_data_dir(), "clipcopy-data")
 HISTORY_PATH = os.path.join(DATA_DIR, "history.json")
 
 POLL_MS = 200
@@ -60,7 +60,7 @@ _state = {
 
 
 def log(msg):
-    sys.stderr.write("clipman: %s\n" % msg)
+    sys.stderr.write("clipcopy: %s\n" % msg)
     sys.stderr.flush()
 
 
@@ -196,7 +196,7 @@ def copy_entry(item):
 class ClipWindow(Gtk.Window):
     def __init__(self, app):
         super().__init__(
-            application=app, title="Clipboard History",
+            application=app, title="ClipCopy",
             modal=False, resizable=False,
         )
         self.set_default_size(560, 460)
@@ -376,7 +376,7 @@ class ClipWindow(Gtk.Window):
 
 # ---------------------------------------------------------------- app
 
-class ClipmanApp(Gtk.Application):
+class ClipCopyApp(Gtk.Application):
     def __init__(self):
         super().__init__(application_id=APP_ID,
                          flags=Gio.ApplicationFlags.FLAGS_NONE)
@@ -417,7 +417,7 @@ class ClipmanApp(Gtk.Application):
         helper.set_resizable(False)
         helper.set_default_size(1, 1)
         helper.set_focusable(False)
-        helper.set_title("clipman")
+        helper.set_title("clipcopy")
         helper.present()
         _state["mon"] = helper
 
@@ -470,7 +470,7 @@ def mark_startup_done():
 
 
 def main():
-    app = ClipmanApp()
+    app = ClipCopyApp()
     # Single instance: a second launch just raises the window.
     return app.run([sys.argv[0]])
 

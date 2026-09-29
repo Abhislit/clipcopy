@@ -13,7 +13,7 @@ import gi  # noqa: E402
 gi.require_version("Gtk", "4.0")
 from gi.repository import Gio, Gtk  # noqa: E402
 
-import clipman  # noqa: E402
+import clipcopy  # noqa: E402
 from history import History  # noqa: E402
 
 fails = []
@@ -35,7 +35,7 @@ def row_texts(win):
 
 
 def main():
-    app = Gtk.Application(application_id="io.github.clipman.uitest",
+    app = Gtk.Application(application_id="io.github.clipcopy.uitest",
                           flags=Gio.ApplicationFlags.NON_UNIQUE)
     app.connect("activate", run)
     return app.run([])
@@ -49,13 +49,13 @@ def run(app):
         hist.add(t)
     by_text = lambda t: [i for i in hist if i.text == t][0]  # noqa: E731
     by_text("multi\nline\ngamma").pinned = True
-    clipman._state["history"] = hist
+    clipcopy._state["history"] = hist
 
-    win = clipman.ClipWindow(app)
-    clipman._state["win"] = win
+    win = clipcopy.ClipWindow(app)
+    clipcopy._state["win"] = win
     win.refresh()
 
-    check("window title", win.get_title() == "Clipboard History")
+    check("window title", win.get_title() == "ClipCopy")
     check("rows built", len(win.rows) == 5, len(win.rows))
     check("status line", win.status.get_text() == "5 of 5 entries",
           win.status.get_text())
