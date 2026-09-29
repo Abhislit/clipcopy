@@ -197,8 +197,19 @@ systemctl --user daemon-reload
 systemctl --user enable --now clipcopy.service
 
 # Hotkey: only bind a slot that GNOME's schema already knows about.
-if gsettings list-keys "$KEYBIND_SCHEMA" 2>/dev/null | grep -qx "$KEY"; then
-    gsettings set "$KEYBIND_SCHEMA" "$KEY" "['$KEYS']"
+# gsettings can transiently fail while the session bus is settling just after
+# a service start, so retry briefly rather than silently skipping the binding.
+hotkey_bound=0
+for _ in 1 2 3 4 5; do
+    if keys="$(gsettings list-keys "$KEYBIND_SCHEMA" 2>/dev/null)" && \
+       printf '%s\n' "$keys" | grep -qx "$KEY"; then
+        gsettings set "$KEYBIND_SCHEMA" "$KEY" "['$KEYS']" && hotkey_bound=1
+        break
+    fi
+    sleep 0.4
+done
+
+if [ "$hotkey_bound" -eq 1 ]; then
     say "hotkey $KEYS bound to '$KEY'"
 else
     say "could not bind a hotkey: no '$KEY' key in $KEYBIND_SCHEMA"
